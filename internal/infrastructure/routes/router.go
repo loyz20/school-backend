@@ -1,11 +1,13 @@
 package routes
 
 import (
+	"school-backend/internal/infrastructure/external"
 	"school-backend/internal/infrastructure/persistence"
 	"school-backend/internal/interface/controller"
 	"school-backend/internal/usecase"
 	"school-backend/pkg/jwt"
 	"school-backend/pkg/middleware"
+	"school-backend/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -19,15 +21,21 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	// Init repository
 	userRepo := persistence.NewUserRepo(db)
 	refreshRepo := persistence.NewRefreshTokenRepo(db)
+	siswaRepo := persistence.NewSiswaRepo(db)
+
+	dapoUrl := utils.GetEnv("DAPO_URL", "localhost")
+	dapoRepo := external.NewDapodikClient(dapoUrl)
 
 	// Init JWT manager
 	jwtManager := jwt.NewManager()
 
 	// Init usecase
 	authUsecase := usecase.NewAuthUsecase(refreshRepo, userRepo, jwtManager)
+	dapoUseCase := usecase.NewImportDapodikUsecase(dapoRepo, siswaRepo)
 
 	// Init handler
 	authHandler := controller.NewAuthHandler(authUsecase)
+	dapoHandler := controller.NewAImportDapodikHandler(dapoUseCase)
 
 	api := r.Group("/api/v1")
 
@@ -56,6 +64,8 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 		admin.GET("/dashboard", func(c *gin.Context) {
 			c.JSON(200, gin.H{"message": "Selamat datang admin!"})
 		})
+		admin.POST("/import/siswa-dapodik", dapoHandler.ImportPD)
+
 	}
 
 	return r
