@@ -6,7 +6,7 @@ import (
 	"school-backend/internal/dto"
 	"school-backend/internal/entity"
 	"school-backend/internal/interface/repository"
-	"school-backend/pkg/helper"
+	"school-backend/pkg/utils"
 )
 
 type SemesterUsecase struct {
@@ -39,7 +39,7 @@ func (uc *SemesterUsecase) Create(ctx context.Context, s dto.CreateSemesterReque
 		}
 	}
 
-	id, err := helper.GenerateSemesterID(s.TahunAjaran, s.SemesterKe)
+	id, err := utils.GenerateSemesterID(s.TahunAjaran, s.SemesterKe)
 	if err != nil {
 		return nil, err
 	}

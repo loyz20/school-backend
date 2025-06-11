@@ -14,3 +14,10 @@ type LoginRequest struct {
 type RefreshTokenRequest struct {
 	RefreshToken string `json:"refresh_token" binding:"required"`
 }
+
+type UserUpdateRequest struct {
+	Nama      string `json:"nama"`
+	Alamat    string `json:"alamat"`
+	NoTelepon string `json:"no_telepon"`
+	NoHP      string `json:"no_hp"`
+}

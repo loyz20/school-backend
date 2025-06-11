@@ -6,38 +6,59 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Success(ctx *gin.Context, message string, data interface{}) {
-	ctx.JSON(http.StatusOK, gin.H{
-		"status":  "success",
-		"message": message,
-		"data":    data,
+type APIResponse struct {
+	Status  string      `json:"status"`            // "success" atau "error"
+	Message string      `json:"message,omitempty"` // Keterangan singkat
+	Data    interface{} `json:"data,omitempty"`    // Payload jika sukses
+	Errors  interface{} `json:"errors,omitempty"`  // Detail error jika gagal
+}
+
+type Pagination struct {
+	Page       int `json:"page"`
+	Limit      int `json:"limit"`
+	TotalItems int `json:"total_items"`
+	TotalPages int `json:"total_pages"`
+}
+
+type PaginatedData struct {
+	Items      interface{} `json:"items"`
+	Pagination Pagination  `json:"pagination"`
+}
+
+// Success response dengan data
+func Success(c *gin.Context, message string, data interface{}) {
+	c.JSON(http.StatusOK, APIResponse{
+		Status:  "success",
+		Message: message,
+		Data:    data,
 	})
 }
 
-func Created(ctx *gin.Context, message string, data interface{}) {
-	ctx.JSON(http.StatusCreated, gin.H{
-		"status":  "success",
-		"message": message,
-		"data":    data,
+// Created 201
+func Created(c *gin.Context, message string, data interface{}) {
+	c.JSON(http.StatusCreated, APIResponse{
+		Status:  "success",
+		Message: message,
+		Data:    data,
 	})
 }
 
-func Error(ctx *gin.Context, statusCode int, message string, detail interface{}) {
-	ctx.JSON(statusCode, gin.H{
-		"status":  "error",
-		"message": message,
-		"errors":  detail,
+// Error response biasa
+func Error(c *gin.Context, statusCode int, message string, err interface{}) {
+	c.JSON(statusCode, APIResponse{
+		Status:  "error",
+		Message: message,
+		Errors:  err,
 	})
 }
 
-func BadRequest(ctx *gin.Context, detail interface{}) {
-	Error(ctx, http.StatusBadRequest, "Permintaan tidak valid", detail)
-}
-
-func NotFound(ctx *gin.Context, detail interface{}) {
-	Error(ctx, http.StatusNotFound, "Data tidak ditemukan", detail)
-}
-
-func InternalError(ctx *gin.Context, detail interface{}) {
-	Error(ctx, http.StatusInternalServerError, "Terjadi kesalahan server", detail)
+func Paginated(c *gin.Context, message string, items interface{}, pagination Pagination) {
+	c.JSON(http.StatusOK, APIResponse{
+		Status:  "success",
+		Message: message,
+		Data: PaginatedData{
+			Items:      items,
+			Pagination: pagination,
+		},
+	})
 }

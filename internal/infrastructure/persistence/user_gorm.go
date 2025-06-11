@@ -1,6 +1,7 @@
 package persistence
 
 import (
+	"context"
 	"school-backend/internal/entity"
 	"school-backend/internal/interface/repository"
 
@@ -31,4 +32,27 @@ func (r *userRepo) FindByID(id string) (*entity.Pengguna, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (r *userRepo) Update(s *entity.Pengguna) error {
+	return r.db.Save(s).Error
+}
+
+func (r *userRepo) FindAll(ctx context.Context, limit, offset int) ([]entity.Pengguna, int, error) {
+	var users []entity.Pengguna
+	var count int64
+
+	if err := r.db.WithContext(ctx).Model(&entity.Pengguna{}).Count(&count).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if err := r.db.WithContext(ctx).
+		Limit(limit).
+		Offset(offset).
+		Order("created_at desc").
+		Find(&users).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return users, int(count), nil
 }

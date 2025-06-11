@@ -5,6 +5,7 @@ import (
 	"school-backend/internal/dto"
 	"school-backend/internal/usecase"
 	"school-backend/pkg/response"
+	"school-backend/pkg/validation"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,7 +22,7 @@ func NewAuthHandler(uc *usecase.AuthUsecase) *AuthHandler {
 func (h *AuthHandler) Login(c *gin.Context) {
 	var req dto.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.BadRequest(c, err.Error())
+		response.Error(c, http.StatusBadRequest, "Validasi gagal", validation.FormatValidationError(err))
 		return
 	}
 
@@ -44,7 +45,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 func (h *AuthHandler) RefreshToken(c *gin.Context) {
 	var req dto.RefreshTokenRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.BadRequest(c, err.Error())
+		response.Error(c, http.StatusBadRequest, "Validasi gagal", validation.FormatValidationError(err))
 		return
 	}
 
