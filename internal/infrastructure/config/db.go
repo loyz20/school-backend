@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"school-backend/pkg/utils"
 	"time"
@@ -14,14 +13,7 @@ import (
 var DB *gorm.DB
 
 func InitDB() *gorm.DB {
-	host := utils.GetEnv("DB_HOST", "localhost")
-	port := utils.GetEnv("DB_PORT", "5432")
-	user := utils.GetEnv("DB_USER", "postgres")
-	password := utils.GetEnv("DB_PASSWORD", "postgres")
-	dbname := utils.GetEnv("DB_NAME", "sekolah_db")
-
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable TimeZone=Asia/Jakarta",
-		host, port, user, password, dbname)
+	dsn := utils.GetEnv("DATABASE_DSN", "") // contoh: "host=localhost user=postgres dbname=school sslmode=disable password=secret"
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Warn),
