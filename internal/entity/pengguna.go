@@ -8,7 +8,7 @@ type Pengguna struct {
 	Username       string  `json:"username"`
 	Nama           string  `json:"nama"`
 	PeranIDStr     string  `json:"peran_id_str"`
-	Password       string  `json:"-"` // tidak diserialisasi
+	Password       string  `json:"-"`
 	Alamat         string  `json:"alamat"`
 	NoTelepon      string  `json:"no_telepon"`
 	NoHP           string  `json:"no_hp"`
