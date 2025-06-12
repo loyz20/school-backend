@@ -2,6 +2,7 @@ package dto
 
 import (
 	"school-backend/internal/entity"
+	"school-backend/pkg/auth"
 )
 
 func (d *SiswaDapodikFull) ToEntity() (*entity.Siswa, error) {
@@ -42,5 +43,25 @@ func (d *SiswaDapodikFull) ToEntity() (*entity.Siswa, error) {
 		TingkatPendidikanID:   d.TingkatPendidikanID,
 		KurikulumID:           d.KurikulumID,
 		KurikulumIDStr:        d.KurikulumIDStr,
+	}, nil
+}
+
+func (d *PenggunaDapodikFull) ToEntity() (*entity.Pengguna, error) {
+	passHass, err := auth.HashPassword("guru1234")
+	if err != nil {
+		return nil, err
+	}
+	return &entity.Pengguna{
+		PenggunaID:     d.PenggunaID,
+		SekolahID:      d.SekolahID,
+		Username:       d.Username,
+		Nama:           d.Nama,
+		PeranIDStr:     d.PeranIDStr,
+		Password:       passHass,
+		Alamat:         d.Alamat,
+		NoTelepon:      d.NoTelepon,
+		NoHP:           d.NoHP,
+		PTKID:          d.PTKID,
+		PesertaDidikID: d.PesertaDidikID,
 	}, nil
 }

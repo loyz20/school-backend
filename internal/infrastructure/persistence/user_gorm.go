@@ -56,3 +56,7 @@ func (r *userRepo) FindAll(ctx context.Context, limit, offset int) ([]entity.Pen
 
 	return users, int(count), nil
 }
+
+func (r *userRepo) Upsert(s *entity.Pengguna) error {
+	return r.db.Save(s).Error
+}

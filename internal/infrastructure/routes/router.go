@@ -32,9 +32,10 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 
 	// Init usecase
 	authUsecase := usecase.NewAuthUsecase(refreshRepo, userRepo, jwtManager)
-	dapoUseCase := usecase.NewImportDapodikUsecase(dapoRepo, semesterRepo, siswaRepo)
+	dapoUseCase := usecase.NewImportDapodikUsecase(dapoRepo, semesterRepo, siswaRepo, userRepo)
 	siswaUseCase := usecase.NewSiswaUsecase(siswaRepo)
 	semesterUseCase := usecase.NewSemesterUsecase(semesterRepo)
+	userUseCase := usecase.NewUserUsecase(userRepo)
 	// Register Dapodik clien
 
 	// Init handler
@@ -42,6 +43,7 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	dapoHandler := controller.NewAImportDapodikHandler(dapoUseCase)
 	siswaHandler := controller.NewSiswaHandler(siswaUseCase)
 	semesterHandler := controller.NewSemesterHandler(semesterUseCase)
+	userHandler := controller.NewUserHandler(userUseCase)
 
 	api := r.Group("/api/v1")
 	api.GET("/semester", semesterHandler.GetAll)
@@ -72,8 +74,10 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 		admin.GET("/dashboard", func(c *gin.Context) {
 			c.JSON(200, gin.H{"message": "Selamat datang admin!"})
 		})
+		admin.GET("/user", userHandler.GetAll)
 		admin.POST("/import/cek-semester", dapoHandler.ImportSemester)
 		admin.POST("/import/siswa-dapodik", dapoHandler.ImportPD)
+		admin.POST("/import/pengguna-dapodik", dapoHandler.ImportPG)
 
 	}
 

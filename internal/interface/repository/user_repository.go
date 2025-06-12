@@ -10,4 +10,5 @@ type UserRepository interface {
 	FindByID(id string) (*entity.Pengguna, error)
 	FindAll(ctx context.Context, limit, offset int) ([]entity.Pengguna, int, error)
 	Update(s *entity.Pengguna) error
+	Upsert(s *entity.Pengguna) error
 }

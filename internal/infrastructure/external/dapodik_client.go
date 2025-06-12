@@ -55,7 +55,7 @@ func (c *DapodikClient) GetFullPesertaDidik(npsn string) (*struct {
 }
 
 func (c *DapodikClient) GetFullPengguna(npsn string) (*struct {
-	Rows []dto.SiswaDapodikFull `json:"rows"`
+	Rows []dto.PenggunaDapodikFull `json:"rows"`
 }, error) {
 	url := fmt.Sprintf("%s/getPengguna?npsn=%s", c.BaseURL, npsn)
 
@@ -83,7 +83,7 @@ func (c *DapodikClient) GetFullPengguna(npsn string) (*struct {
 	}
 
 	var result struct {
-		Rows []dto.SiswaDapodikFull `json:"rows"`
+		Rows []dto.PenggunaDapodikFull `json:"rows"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
