@@ -65,3 +65,31 @@ func (d *PenggunaDapodikFull) ToEntity() (*entity.Pengguna, error) {
 		PesertaDidikID: d.PesertaDidikID,
 	}, nil
 }
+
+func (d *SekolahDapodikFull) ToEntity(token string) (*entity.Sekolah, error) {
+	return &entity.Sekolah{
+		SekolahID:             d.SekolahID,
+		Nama:                  d.Nama,
+		NPSN:                  d.NPSN,
+		Website:               d.Website,
+		NSS:                   d.NSS,
+		BentukPendidikanID:    d.BentukPendidikanID,
+		BentukPendidikanIDStr: d.BentukPendidikanIDStr,
+		StatusSekolah:         d.StatusSekolah,
+		StatusSekolahStr:      d.StatusSekolahStr,
+		RT:                    d.RT,
+		RW:                    d.RW,
+		KodeWilayah:           d.KodeWilayah,
+		KodePos:               d.KodePos,
+		NomorFax:              d.NomorFax,
+		Lintang:               d.Lintang,
+		Bujur:                 d.Bujur,
+		Dusun:                 d.Dusun,
+		DesaKelurahan:         d.DesaKelurahan,
+		Kecamatan:             d.Kecamatan,
+		KabupatenKota:         d.KabupatenKota,
+		Provinsi:              d.Provinsi,
+		IsSKS:                 d.IsSKS,
+		Token:                 token,
+	}, nil
+}

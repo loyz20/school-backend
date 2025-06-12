@@ -21,18 +21,21 @@ type ImportDapodikUsecase struct {
 	semesterRepo repository.SemesterRepository
 	siswaRepo    repository.SiswaRepository
 	userRepo     repository.UserRepository
+	sekolahRepo  repository.SekolahRepository
 }
 
 func NewImportDapodikUsecase(
 	client service.DapodikClientInterface,
 	semesterRepo repository.SemesterRepository,
 	siswaRepo repository.SiswaRepository,
-	userRepo repository.UserRepository) *ImportDapodikUsecase {
+	userRepo repository.UserRepository,
+	sekolahRepo repository.SekolahRepository) *ImportDapodikUsecase {
 	return &ImportDapodikUsecase{
 		client:       client,
 		semesterRepo: semesterRepo,
 		siswaRepo:    siswaRepo,
 		userRepo:     userRepo,
+		sekolahRepo:  sekolahRepo,
 	}
 }
 
@@ -112,6 +115,30 @@ func (uc *ImportDapodikUsecase) ImportPengguna(npsn string) (*ImportResult, erro
 			continue
 		}
 		if err := uc.userRepo.Upsert(pengguna); err != nil {
+			result.JumlahGagal++
+			continue
+		}
+		result.JumlahBerhasil++
+	}
+
+	return &result, nil
+}
+
+func (uc *ImportDapodikUsecase) ImportSekolah(baseURL string, npsn string, token string) (*ImportResult, error) {
+	resp, err := uc.client.GetFullSekolah(baseURL, npsn, token)
+	if err != nil {
+		return nil, err
+	}
+
+	var result ImportResult
+
+	for _, row := range resp.Rows {
+		sekolah, err := row.ToEntity(token)
+		if err != nil {
+			result.JumlahGagal++
+			continue
+		}
+		if err := uc.sekolahRepo.Upsert(sekolah); err != nil {
 			result.JumlahGagal++
 			continue
 		}

@@ -74,3 +74,32 @@ type PenggunaDapodikFull struct {
 	PTKID          *string `json:"ptk_id"`
 	PesertaDidikID *string `json:"peserta_didik_id"`
 }
+
+type SekolahDapodikFull struct {
+	SekolahID             string  `json:"sekolah_id"`
+	Nama                  string  `json:"nama"`
+	NSS                   string  `json:"nss"`
+	NPSN                  string  `json:"npsn"`
+	BentukPendidikanID    int     `json:"bentuk_pendidikan_id"`
+	BentukPendidikanIDStr string  `json:"bentuk_pendidikan_id_str"`
+	StatusSekolah         string  `json:"status_sekolah"`
+	StatusSekolahStr      string  `json:"status_sekolah_str"`
+	AlamatJalan           string  `json:"alamat_jalan"`
+	RT                    string  `json:"rt"`
+	RW                    string  `json:"rw"`
+	KodeWilayah           string  `json:"kode_wilayah"`
+	KodePos               string  `json:"kode_pos"`
+	NomorTelepon          *string `json:"nomor_telepon,omitempty"`
+	NomorFax              *string `json:"nomor_fax,omitempty"`
+	Email                 *string `json:"email,omitempty"`
+	Website               *string `json:"website,omitempty"`
+	IsSKS                 bool    `json:"is_sks"`
+	Lintang               string  `json:"lintang"`
+	Bujur                 *string `json:"bujur,omitempty"`
+	Dusun                 *string `json:"dusun,omitempty"`
+	DesaKelurahan         string  `json:"desa_kelurahan"`
+	Kecamatan             string  `json:"kecamatan"`
+	KabupatenKota         string  `json:"kabupaten_kota"`
+	Provinsi              string  `json:"provinsi"`
+	Token                 string  `json:"token"`
+}

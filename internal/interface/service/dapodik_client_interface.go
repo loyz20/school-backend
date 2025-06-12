@@ -9,4 +9,8 @@ type DapodikClientInterface interface {
 	GetFullPengguna(npsn string) (*struct {
 		Rows []dto.PenggunaDapodikFull `json:"rows"`
 	}, error)
+
+	GetFullSekolah(baseUrl string, npsn string, token string) (*struct {
+		Rows []dto.SekolahDapodikFull `json:"rows"`
+	}, error)
 }

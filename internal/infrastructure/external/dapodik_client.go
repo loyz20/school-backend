@@ -128,28 +128,39 @@ func (c *DapodikClient) GetFullRombel(npsn string) (*struct {
 	return &result, nil
 }
 
-func (c *DapodikClient) GetSekolah() error {
-	url := fmt.Sprintf("%s/ping", c.BaseURL) // ganti jika tidak ada endpoint /ping
+func (c *DapodikClient) GetFullSekolah(baseURL string, npsn string, token string) (*struct {
+	Rows []dto.SekolahDapodikFull `json:"rows"`
+}, error) {
+	url := fmt.Sprintf("%s/getSekolah?npsn=%s", baseURL, npsn)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return fmt.Errorf("gagal membuat request ping: %w", err)
+		return nil, err
 	}
 
-	dapoToken := utils.GetEnv("DAPO_TOKEN", "")
+	dapoToken := token
+
+	// Set header Authorization
 	req.Header.Set("Authorization", "Bearer "+dapoToken)
 	req.Header.Set("Accept", "application/json")
 
-	resp, err := http.DefaultClient.Do(req)
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("gagal menghubungi API Dapodik: %w", err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return fmt.Errorf("ping gagal: status %d - %s", resp.StatusCode, string(body))
+		return nil, fmt.Errorf("status %d: %s", resp.StatusCode, string(body))
 	}
 
-	return nil
+	var result struct {
+		Rows []dto.SekolahDapodikFull `json:"rows"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+	return &result, nil
 }

@@ -48,6 +48,24 @@ func (h *ImportDapodikHandler) ImportPG(c *gin.Context) {
 	response.Success(c, "Import berhasil", nil)
 }
 
+func (h *ImportDapodikHandler) ImportSekolah(c *gin.Context) {
+	npsn := c.Query("npsn")
+	token := c.Query("token")
+	baseUrl := c.Query("base_url")
+
+	if npsn == "" && token == "" && baseUrl == "" {
+		response.Error(c, http.StatusBadRequest, "npsn dan token dan url dapodik wajib diisi", nil)
+		return
+	}
+
+	if _, err := h.usecase.ImportSekolah(baseUrl, npsn, token); err != nil {
+		response.Error(c, http.StatusInternalServerError, "Gagal import dari Dapodik", err.Error())
+		return
+	}
+
+	response.Success(c, "Import berhasil", nil)
+}
+
 func (h *ImportDapodikHandler) ImportSemester(c *gin.Context) {
 	npsn := c.Query("npsn")
 	token := c.Query("token")

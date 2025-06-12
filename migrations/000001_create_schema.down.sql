@@ -5,3 +5,4 @@ DROP TABLE IF EXISTS refresh_tokens;
 DROP TABLE IF EXISTS pengguna;
 DROP TABLE IF EXISTS siswas;
 DROP TABLE IF EXISTS semester;
+DROP TABLE IF EXISTS sekolah;
