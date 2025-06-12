@@ -24,8 +24,11 @@ services:
     image: migrate/migrate
     volumes:
       - ./migrations:/migrations
-      - ./entrypoint.sh:/entrypoint.sh
-    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    command: [
+      "-path", "/migrations",
+      "-database", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable",
+      "-verbose", "up"
+    ]
     env_file:
       - .env
     depends_on:
