@@ -23,7 +23,7 @@ func (r *semesterRepo) FindAll() ([]*entity.Semester, error) {
 
 func (r *semesterRepo) FindByID(id string) (*entity.Semester, error) {
 	var semester entity.Semester
-	err := r.db.First(&semester, "id = ?", id).Error
+	err := r.db.First(&semester, "semester_id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}

@@ -2,7 +2,7 @@ package controller
 
 import (
 	"net/http"
-	"school-backend/internal/dto"
+	"school-backend/internal/entity"
 	"school-backend/internal/usecase"
 	"school-backend/pkg/response"
 	"school-backend/pkg/validation"
@@ -38,7 +38,7 @@ func (h *UserHandler) GetAll(c *gin.Context) {
 }
 
 func (h *UserHandler) Update(ctx *gin.Context) {
-	var input dto.UserUpdateRequest
+	var input entity.Pengguna
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		response.Error(ctx, http.StatusBadRequest, "Validasi gagal", validation.FormatValidationError(err))
 		return

@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS pembelajaran;
+DROP TABLE IF EXISTS anggota_rombel;
+DROP TABLE IF EXISTS rombongan_belajar;
+DROP TABLE IF EXISTS refresh_tokens;
+DROP TABLE IF EXISTS pengguna;
+DROP TABLE IF EXISTS siswas;
+DROP TABLE IF EXISTS semester;

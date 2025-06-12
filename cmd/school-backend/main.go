@@ -2,12 +2,11 @@ package main
 
 import (
 	"log"
-	"os"
 
-	"school-backend/internal/entity"
 	"school-backend/internal/infrastructure/config"
 	"school-backend/internal/infrastructure/persistence"
 	"school-backend/internal/infrastructure/routes"
+	"school-backend/pkg/utils"
 
 	"github.com/joho/godotenv"
 )
@@ -16,14 +15,13 @@ func main() {
 	_ = godotenv.Load()
 	db := config.InitDB()
 
-	// Migrasi & seeder
-	_ = db.AutoMigrate(&entity.Pengguna{}, &entity.RefreshToken{}) // dan entitas lainnya
+	// Migrasi & seede
 	persistence.SeedDefaultUser(db)
 
 	r := routes.SetupRouter(db)
 
 	// Start server
-	port := os.Getenv("PORT")
+	port := utils.GetEnv("PORT", "")
 	if port == "" {
 		port = "8080"
 	}

@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"school-backend/internal/entity"
 	"school-backend/internal/interface/repository"
 )
@@ -13,8 +14,9 @@ func NewSiswaUsecase(repo repository.SiswaRepository) *SiswaUsecase {
 	return &SiswaUsecase{repo: repo}
 }
 
-func (u *SiswaUsecase) GetAll() ([]*entity.Siswa, error) {
-	return u.repo.FindAll()
+func (uc *SiswaUsecase) GetAll(ctx context.Context, page, limit int) ([]entity.Siswa, int, error) {
+	offset := (page - 1) * limit
+	return uc.repo.FindAll(ctx, limit, offset)
 }
 
 func (u *SiswaUsecase) GetByID(id string) (*entity.Siswa, error) {

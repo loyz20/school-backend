@@ -7,7 +7,6 @@ type RombonganBelajar struct {
 	Nama                 string  `gorm:"type:varchar(100)" json:"nama"`
 	TingkatPendidikanID  string  `gorm:"type:varchar(10)"`
 	TingkatPendidikanStr string  `gorm:"type:varchar(100)"`
-	SemesterID           string  `gorm:"type:varchar(20)" json:"semester_id"`
 	JenisRombel          string  `gorm:"type:varchar(5)" json:"jenis_rombel"`
 	JenisRombelStr       string  `gorm:"type:varchar(100)"`
 	KurikulumID          int     `gorm:"type:integer" json:"kurikulum_id"`
@@ -25,8 +24,11 @@ type RombonganBelajar struct {
 	SKEkskul             *string `gorm:"type:varchar(100)"`
 	IDEkskulStr          *string `gorm:"type:varchar(100)"`
 
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	SemesterID string   `gorm:"type:text" json:"semester_id"`
+	Semester   Semester `gorm:"foreignKey:SemesterID;references:SemesterID"`
+
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time `gorm:"autoCreateTime" json:"updated_at"`
 
 	AnggotaRombel []AnggotaRombel `gorm:"foreignKey:RombonganBelajarID"`
 	Pembelajaran  []Pembelajaran  `gorm:"foreignKey:RombonganBelajarID"`
@@ -52,4 +54,16 @@ type Pembelajaran struct {
 	JamMengajarPerMinggu string  `gorm:"type:varchar(5)"`
 	StatusDiKurikulum    string  `gorm:"type:varchar(5)"`
 	StatusDiKurikulumStr string  `gorm:"column:status_kurikulum_str"`
+}
+
+func (RombonganBelajar) TableName() string {
+	return "rombongan_belajar"
+}
+
+func (AnggotaRombel) TableName() string {
+	return "anggota_rombel"
+}
+
+func (Pembelajaran) TableName() string {
+	return "pembelajaran"
 }

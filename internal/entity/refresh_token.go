@@ -1,6 +1,8 @@
 package entity
 
-import "time"
+import (
+	"time"
+)
 
 type RefreshToken struct {
 	ID         string `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
@@ -10,5 +12,10 @@ type RefreshToken struct {
 	UserAgent  string
 	ExpiredAt  time.Time `gorm:"not null"`
 	IsRevoked  bool      `gorm:"default:false"`
-	CreatedAt  time.Time
+	CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt  time.Time `gorm:"autoCreateTime" json:"updated_at"`
+}
+
+func (RefreshToken) TableName() string {
+	return "refresh_tokens"
 }

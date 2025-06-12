@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"school-backend/internal/dto"
 	"school-backend/internal/entity"
 	"school-backend/internal/interface/repository"
 )
@@ -15,17 +14,11 @@ func NewUserUsecase(repo repository.UserRepository) *UserUsecase {
 	return &UserUsecase{repo: repo}
 }
 
-func (uc *UserUsecase) Update(ctx context.Context, u dto.UserUpdateRequest) error {
-	user := entity.Pengguna{
-		Nama:      u.Nama,
-		Alamat:    u.Alamat,
-		NoTelepon: u.NoTelepon,
-		NoHP:      u.NoHP,
-	}
-	return uc.repo.Update(&user)
+func (uc *UserUsecase) Update(ctx context.Context, u entity.Pengguna) error {
+	return uc.repo.Update(&u)
 }
 
-func (u *UserUsecase) GetAll(ctx context.Context, page, limit int) ([]entity.Pengguna, int, error) {
+func (uc *UserUsecase) GetAll(ctx context.Context, page, limit int) ([]entity.Pengguna, int, error) {
 	offset := (page - 1) * limit
-	return u.repo.FindAll(ctx, limit, offset)
+	return uc.repo.FindAll(ctx, limit, offset)
 }

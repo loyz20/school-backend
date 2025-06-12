@@ -19,6 +19,7 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	r.Use(middleware.Logger())
 
 	// Init repository
+	semesterRepo := persistence.NewSemesterRepo(db)
 	userRepo := persistence.NewUserRepo(db)
 	refreshRepo := persistence.NewRefreshTokenRepo(db)
 	siswaRepo := persistence.NewSiswaRepo(db)
@@ -31,13 +32,19 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 
 	// Init usecase
 	authUsecase := usecase.NewAuthUsecase(refreshRepo, userRepo, jwtManager)
-	dapoUseCase := usecase.NewImportDapodikUsecase(dapoRepo, siswaRepo)
+	dapoUseCase := usecase.NewImportDapodikUsecase(dapoRepo, semesterRepo, siswaRepo)
+	siswaUseCase := usecase.NewSiswaUsecase(siswaRepo)
+	semesterUseCase := usecase.NewSemesterUsecase(semesterRepo)
+	// Register Dapodik clien
 
 	// Init handler
 	authHandler := controller.NewAuthHandler(authUsecase)
 	dapoHandler := controller.NewAImportDapodikHandler(dapoUseCase)
+	siswaHandler := controller.NewSiswaHandler(siswaUseCase)
+	semesterHandler := controller.NewSemesterHandler(semesterUseCase)
 
 	api := r.Group("/api/v1")
+	api.GET("/semester", semesterHandler.GetAll)
 
 	// Auth endpoints
 	auth := api.Group("/auth")
@@ -55,6 +62,7 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 			role := c.GetString("peran_id_str")
 			c.JSON(200, gin.H{"pengguna_id": userID, "peran": role})
 		})
+		api.GET("/siswa", siswaHandler.GetAll)
 	}
 
 	// Endpoint khusus admin
@@ -64,6 +72,7 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 		admin.GET("/dashboard", func(c *gin.Context) {
 			c.JSON(200, gin.H{"message": "Selamat datang admin!"})
 		})
+		admin.POST("/import/cek-semester", dapoHandler.ImportSemester)
 		admin.POST("/import/siswa-dapodik", dapoHandler.ImportPD)
 
 	}
