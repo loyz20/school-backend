@@ -93,3 +93,56 @@ func (d *SekolahDapodikFull) ToEntity(token string) (*entity.Sekolah, error) {
 		Token:                 token,
 	}, nil
 }
+
+func (d *RombelDapodikFull) ToEntity() (*entity.RombonganBelajar, error) {
+	return &entity.RombonganBelajar{
+		RombonganBelajarID:   d.RombonganBelajarID,
+		Nama:                 d.Nama,
+		TingkatPendidikanID:  d.TingkatPendidikanID,
+		TingkatPendidikanStr: d.TingkatPendidikanStr,
+		JenisRombel:          d.JenisRombel,
+		JenisRombelStr:       d.JenisRombelStr,
+		KurikulumID:          d.KurikulumID,
+		KurikulumIDStr:       d.KurikulumIDStr,
+		IDRuang:              d.IDRuang,
+		IDRuangStr:           d.IDRuangStr,
+		MovingClass:          d.MovingClass,
+		PTKID:                d.PTKID,
+		PTKIDStr:             d.PTKIDStr,
+		JurusanID:            d.JurusanID,
+		JurusanIDStr:         d.JurusanIDStr,
+		IDKelasEkskul:        d.IDKelasEkskul,
+		IDEkskul:             d.IDEkskul,
+		NMEkskul:             d.NMEkskul,
+		SKEkskul:             d.SKEkskul,
+		IDEkskulStr:          d.IDEkskulStr,
+		SemesterID:           d.SemesterID,
+	}, nil
+}
+
+func (d *AnggotaRombelDapodikFull) ToEntity(id string) (*entity.AnggotaRombel, error) {
+	return &entity.AnggotaRombel{
+		AnggotaRombelID:     d.AnggotaRombelID,
+		RombonganBelajarID:  id,
+		PesertaDidikID:      d.PesertaDidikID,
+		JenisPendaftaranID:  d.JenisPendaftaranID,
+		JenisPendaftaranStr: d.JenisPendaftaranStr,
+	}, nil
+}
+
+func (d *PembelajaranDapodikFull) ToEntity(id string) (*entity.Pembelajaran, error) {
+
+	return &entity.Pembelajaran{
+		PembelajaranID:       d.PembelajaranID,
+		RombonganBelajarID:   id,
+		MataPelajaranID:      d.MataPelajaranID,
+		MataPelajaranIDStr:   d.MataPelajaranIDStr,
+		NamaMataPelajaran:    d.NamaMataPelajaran,
+		PTKTerdaftarID:       d.PTKTerdaftarID,
+		PTKID:                d.PTKID,
+		IndukPembelajaranID:  d.IndukPembelajaranID,
+		JamMengajarPerMinggu: d.JamMengajarPerMinggu,
+		StatusDiKurikulum:    d.StatusDiKurikulum,
+		StatusDiKurikulumStr: d.StatusDiKurikulumStr,
+	}, nil
+}

@@ -91,9 +91,7 @@ func (c *DapodikClient) GetFullPengguna(npsn string) (*struct {
 	return &result, nil
 }
 
-func (c *DapodikClient) GetFullRombel(npsn string) (*struct {
-	Rows []dto.SiswaDapodikFull `json:"rows"`
-}, error) {
+func (c *DapodikClient) GetFullRombel(npsn string) (*dto.FullRombelResponse, error) {
 	url := fmt.Sprintf("%s/getRombonganBelajar?npsn=%s", c.BaseURL, npsn)
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -102,8 +100,6 @@ func (c *DapodikClient) GetFullRombel(npsn string) (*struct {
 	}
 
 	dapoToken := utils.GetEnv("DAPO_TOKEN", "")
-
-	// Set header Authorization
 	req.Header.Set("Authorization", "Bearer "+dapoToken)
 	req.Header.Set("Accept", "application/json")
 
@@ -119,12 +115,12 @@ func (c *DapodikClient) GetFullRombel(npsn string) (*struct {
 		return nil, fmt.Errorf("status %d: %s", resp.StatusCode, string(body))
 	}
 
-	var result struct {
-		Rows []dto.SiswaDapodikFull `json:"rows"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	var result dto.FullRombelResponse
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
 		return nil, err
 	}
+
 	return &result, nil
 }
 

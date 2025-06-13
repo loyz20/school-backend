@@ -103,3 +103,51 @@ type SekolahDapodikFull struct {
 	Provinsi              string  `json:"provinsi"`
 	Token                 string  `json:"token"`
 }
+
+type RombelDapodikFull struct {
+	RombonganBelajarID   string                     `json:"rombongan_belajar_id"`
+	Nama                 string                     `json:"nama"`
+	TingkatPendidikanID  string                     `json:"tingkat_pendidikan_id"`
+	TingkatPendidikanStr string                     `json:"tingkat_pendidikan_id_str"`
+	JenisRombel          string                     `json:"jenis_rombel"`
+	JenisRombelStr       string                     `json:"jenis_rombel_str"`
+	KurikulumID          int                        `json:"kurikulum_id"`
+	KurikulumIDStr       string                     `json:"kurikulum_id_str"`
+	IDRuang              string                     `json:"id_ruang"`
+	IDRuangStr           string                     `json:"id_ruang_str"`
+	MovingClass          string                     `json:"moving_class"`
+	PTKID                string                     `json:"ptk_id"`
+	PTKIDStr             string                     `json:"ptk_id_str"`
+	JurusanID            string                     `json:"jurusan_id"`
+	JurusanIDStr         string                     `json:"jurusan_id_str"`
+	IDKelasEkskul        *string                    `json:"id_kelas_ekskul"`
+	IDEkskul             *int                       `json:"id_ekskul"`
+	NMEkskul             *string                    `json:"nm_ekskul"`
+	SKEkskul             *string                    `json:"sk_ekskul"`
+	IDEkskulStr          *string                    `json:"id_ekskul_str"`
+	SemesterID           string                     `json:"semester_id"`
+	AnggotaRombel        []AnggotaRombelDapodikFull `json:"anggota_rombel"`
+	Pembelajaran         []PembelajaranDapodikFull  `json:"pembelajaran"`
+}
+
+type AnggotaRombelDapodikFull struct {
+	AnggotaRombelID     string `json:"anggota_rombel_id"`
+	RombonganBelajarID  string `json:"rombongan_belajar_id"`
+	PesertaDidikID      string `json:"peserta_didik_id"`
+	JenisPendaftaranID  string `json:"jenis_pendaftaran_id"`
+	JenisPendaftaranStr string `json:"jenis_pendaftaran_id_str"`
+}
+
+type PembelajaranDapodikFull struct {
+	PembelajaranID       string  `json:"pembelajaran_id"`
+	RombonganBelajarID   string  `json:"rombongan_belajar_id"`
+	MataPelajaranID      int     `json:"mata_pelajaran_id"`
+	MataPelajaranIDStr   string  `json:"mata_pelajaran_id_str"`
+	NamaMataPelajaran    string  `json:"nama_mata_pelajaran"`
+	PTKTerdaftarID       string  `json:"ptk_terdaftar_id"`
+	PTKID                string  `json:"ptk_id"`
+	IndukPembelajaranID  *string `json:"induk_pembelajaran_id"`
+	JamMengajarPerMinggu string  `json:"jam_mengajar_per_minggu"`
+	StatusDiKurikulum    string  `json:"status_di_kurikulum"`
+	StatusDiKurikulumStr string  `json:"status_di_kurikulum_str"`
+}

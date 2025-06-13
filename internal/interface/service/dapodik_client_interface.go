@@ -13,4 +13,6 @@ type DapodikClientInterface interface {
 	GetFullSekolah(baseUrl string, npsn string, token string) (*struct {
 		Rows []dto.SekolahDapodikFull `json:"rows"`
 	}, error)
+
+	GetFullRombel(npsn string) (*dto.FullRombelResponse, error)
 }

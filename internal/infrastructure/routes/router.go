@@ -24,7 +24,14 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	refreshRepo := persistence.NewRefreshTokenRepo(db)
 	siswaRepo := persistence.NewSiswaRepo(db)
 	sekolahRepo := persistence.NewSekolahRepo(db)
+	// Init Rombongan Belajar repository
+	rombelRepo := persistence.NewRombelRepo(db)
+	// Init Anggota Rombel repository
+	anggotaRombelRepo := persistence.NewAnggotaRombelRepo(db)
+	// Init Pembelajaran repository
+	pembelajaranRepo := persistence.NewPembelajaranRepo(db)
 
+	// Init Dapodik client
 	dapoUrl := utils.GetEnv("DAPO_URL", "localhost")
 	dapoRepo := external.NewDapodikClient(dapoUrl)
 
@@ -33,12 +40,12 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 
 	// Init usecase
 	authUsecase := usecase.NewAuthUsecase(refreshRepo, userRepo, jwtManager)
-	dapoUseCase := usecase.NewImportDapodikUsecase(dapoRepo, semesterRepo, siswaRepo, userRepo, sekolahRepo)
+	dapoUseCase := usecase.NewImportDapodikUsecase(dapoRepo, semesterRepo, siswaRepo, userRepo, sekolahRepo, rombelRepo, anggotaRombelRepo, pembelajaranRepo)
 	siswaUseCase := usecase.NewSiswaUsecase(siswaRepo)
 	semesterUseCase := usecase.NewSemesterUsecase(semesterRepo)
 	userUseCase := usecase.NewUserUsecase(userRepo)
 	sekolahUseCase := usecase.NewSekolahUsecase(sekolahRepo)
-	// Register Dapodik clien
+	rombelUseCase := usecase.NewRombelUsecase(rombelRepo)
 
 	// Init handler
 	authHandler := controller.NewAuthHandler(authUsecase)
@@ -47,6 +54,7 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	semesterHandler := controller.NewSemesterHandler(semesterUseCase)
 	userHandler := controller.NewUserHandler(userUseCase)
 	sekolahHandler := controller.NewSekolahHandler(sekolahUseCase)
+	rombelHandler := controller.NewRombelHandler(rombelUseCase)
 
 	api := r.Group("/api/v1")
 	api.GET("/semester", semesterHandler.GetAll)
@@ -78,12 +86,17 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 		admin.GET("/dashboard", func(c *gin.Context) {
 			c.JSON(200, gin.H{"message": "Selamat datang admin!"})
 		})
+		admin.GET("/rombel", rombelHandler.GetAll)
+		admin.GET("/sekolah", sekolahHandler.GetAll)
+		admin.GET("/semester", semesterHandler.GetAll)
+		admin.GET("/siswa", siswaHandler.GetAll)
 		admin.GET("/user", userHandler.GetAll)
 		admin.POST("/import/cek-koneksi", dapoHandler.ImportSekolah)
 		admin.POST("/import/cek-semester", dapoHandler.ImportSemester)
 		admin.POST("/import/siswa-dapodik", dapoHandler.ImportPD)
 		admin.POST("/import/pengguna-dapodik", dapoHandler.ImportPG)
-
+		admin.POST("/import/sekolah-dapodik", dapoHandler.ImportSekolah)
+		admin.POST("/import/rombel-dapodik", dapoHandler.ImportRombel)
 	}
 
 	return r

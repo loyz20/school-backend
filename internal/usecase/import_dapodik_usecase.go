@@ -17,11 +17,14 @@ type ImportResult struct {
 }
 
 type ImportDapodikUsecase struct {
-	client       service.DapodikClientInterface
-	semesterRepo repository.SemesterRepository
-	siswaRepo    repository.SiswaRepository
-	userRepo     repository.UserRepository
-	sekolahRepo  repository.SekolahRepository
+	client            service.DapodikClientInterface
+	semesterRepo      repository.SemesterRepository
+	siswaRepo         repository.SiswaRepository
+	userRepo          repository.UserRepository
+	sekolahRepo       repository.SekolahRepository
+	rombelRepo        repository.RombonganBelajarRepository
+	anggotaRombelRepo repository.AnggotaRombelRepository
+	pembelajaranRepo  repository.PembelajaranRepository
 }
 
 func NewImportDapodikUsecase(
@@ -29,13 +32,20 @@ func NewImportDapodikUsecase(
 	semesterRepo repository.SemesterRepository,
 	siswaRepo repository.SiswaRepository,
 	userRepo repository.UserRepository,
-	sekolahRepo repository.SekolahRepository) *ImportDapodikUsecase {
+	sekolahRepo repository.SekolahRepository,
+	rombelRepo repository.RombonganBelajarRepository,
+	anggotaRombelRepo repository.AnggotaRombelRepository,
+	pembelajaranRepo repository.PembelajaranRepository,
+) *ImportDapodikUsecase {
 	return &ImportDapodikUsecase{
-		client:       client,
-		semesterRepo: semesterRepo,
-		siswaRepo:    siswaRepo,
-		userRepo:     userRepo,
-		sekolahRepo:  sekolahRepo,
+		client:            client,
+		semesterRepo:      semesterRepo,
+		siswaRepo:         siswaRepo,
+		userRepo:          userRepo,
+		sekolahRepo:       sekolahRepo,
+		rombelRepo:        rombelRepo,
+		anggotaRombelRepo: anggotaRombelRepo,
+		pembelajaranRepo:  pembelajaranRepo,
 	}
 }
 
@@ -143,6 +153,61 @@ func (uc *ImportDapodikUsecase) ImportSekolah(baseURL string, npsn string, token
 			continue
 		}
 		result.JumlahBerhasil++
+	}
+
+	return &result, nil
+}
+
+func (uc *ImportDapodikUsecase) ImportRombel(npsn string) (*ImportResult, error) {
+	resp, err := uc.client.GetFullRombel(npsn)
+	if err != nil {
+		return nil, fmt.Errorf("gagal mengambil data dari dapodik: %w", err)
+	}
+
+	var result ImportResult
+
+	for _, row := range resp.Rows {
+		// Konversi rombel ke entitas domain
+		rombel, err := row.ToEntity()
+		if err != nil {
+			result.JumlahGagal++
+			continue
+		}
+
+		// Simpan rombel
+		if err := uc.rombelRepo.Upsert(rombel); err != nil {
+			result.JumlahGagal++
+			continue
+		}
+		result.JumlahBerhasil++
+
+		// Simpan anggota rombel (jika ada)
+		for _, anggota := range row.AnggotaRombel {
+			ent, err := anggota.ToEntity(row.RombonganBelajarID)
+			if err != nil {
+				result.JumlahGagal++
+				continue
+			}
+			if err := uc.anggotaRombelRepo.Upsert(ent); err != nil {
+				result.JumlahGagal++
+				continue
+			}
+			result.JumlahBerhasil++
+		}
+
+		// Simpan pembelajaran (jika ada)
+		for _, pb := range row.Pembelajaran {
+			ent, err := pb.ToEntity(row.RombonganBelajarID)
+			if err != nil {
+				result.JumlahGagal++
+				continue
+			}
+			if err := uc.pembelajaranRepo.Upsert(ent); err != nil {
+				result.JumlahGagal++
+				continue
+			}
+			result.JumlahBerhasil++
+		}
 	}
 
 	return &result, nil
